@@ -1,0 +1,38 @@
+{
+  "scm.showActionButton": true,
+  "actionButtons": {
+    "loadNpmCommands": false,
+    "commands": [
+      {
+        "name": "🚀  run dev",
+        "command": "npm run dev",
+        "singleInstance": true
+      }
+      // {
+      //   "name": "💿  prisma update local",
+      //   "command": "npx prisma db push",
+      // },
+      // {
+      //   "name": "🌱  prisma seed",
+      //   "command": "npx prisma db seed",
+      // },
+      // {
+      //   "name": "🐴 prisma create migration",
+      //   "command": "npx prisma migrate dev",
+      // }
+    ]
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

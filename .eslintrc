@@ -1,3 +1,18 @@
 {
-  "extends": ["@remix-run/eslint-config", "@remix-run/eslint-config/node"]
+  "extends": ["@remix-run/eslint-config", "@remix-run/eslint-config/node", "prettier"],
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn",
+    "import/first": "warn",
+    "import/newline-after-import": "warn",
+    "import/no-duplicates": "warn",
+    "linebreak-style": ["warn", "unix"],
+    "quotes": ["warn", "single"],
+    "jsx-quotes": ["warn", "prefer-double"],
+    "react/self-closing-comp": "warn",
+    "semi": "off",
+    "@typescript-eslint/semi": ["warn", "always"],
+    "object-curly-spacing": ["warn", "always"]
+  }
 }
