@@ -1,9 +1,12 @@
-import { MantineProvider } from '@mantine/core';
+import { AppShell, MantineProvider } from '@mantine/core';
 import { StylesPlaceholder } from '@mantine/remix';
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 
+import faviconUrl from './assets/favicon.ico';
+import Sidebar from './components/Sidebar';
 import globalStylesUrl from './styles/global.css';
+import { theme } from './theme';
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
@@ -16,11 +19,15 @@ export const links: LinksFunction = () => [
     rel: 'stylesheet',
     href: globalStylesUrl,
   },
+  {
+    rel: 'icon',
+    href: faviconUrl,
+  },
 ];
 
 export default function App() {
   return (
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       <html lang="en">
         <head>
           <Meta />
@@ -28,7 +35,9 @@ export default function App() {
           <StylesPlaceholder />
         </head>
         <body>
-          <Outlet />
+          <AppShell navbar={<Sidebar />}>
+            <Outlet />
+          </AppShell>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
