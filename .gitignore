@@ -9,3 +9,5 @@ sam.yaml
 .env
 /server/_assets/
 /server/*.js.map
+prisma/dev.db
+prisma/dev.db-journal

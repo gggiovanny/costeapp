@@ -1,4 +1,4 @@
-import { Center, Container, Text } from '@mantine/core';
+import { Center, Text } from '@mantine/core';
 
 export default function Index() {
   return (
