@@ -14,6 +14,6 @@ export const fixedCostCreateSchema = z.object({
     .trim()
     .min(1, 'El costo mensual es requerido')
     .regex(DECIMAL_NUMBER_REGEX, 'El costo mensual debe ser un número')
-    .transform(val => new Prisma.Decimal(val))
-    .refine(n => n.gt(0), 'El costo mensual debe ser un valor positivo'),
+    .refine(n => Number(n), 'El costo mensual debe ser un valor positivo')
+    .transform(n => new Prisma.Decimal(n)),
 });
