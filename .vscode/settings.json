@@ -4,22 +4,26 @@
     "loadNpmCommands": false,
     "commands": [
       {
-        "name": "🚀  run dev",
+        "name": "🚀 run dev",
         "command": "npm run dev",
         "singleInstance": true
+      },
+      {
+        "name": "💼 migrate db",
+        "command": "npm run migrate"
+      },
+      {
+        "name": "🌱 seed db",
+        "command": "npm run seed"
+      },
+      {
+        "name": "🔎 view db",
+        "command": "npm run viewdb"
       }
       // {
       //   "name": "💿  prisma update local",
       //   "command": "npx prisma db push",
       // },
-      // {
-      //   "name": "🌱  prisma seed",
-      //   "command": "npx prisma db seed",
-      // },
-      // {
-      //   "name": "🐴 prisma create migration",
-      //   "command": "npx prisma migrate dev",
-      // }
     ]
   },
   "editor.codeActionsOnSave": {
@@ -34,5 +38,15 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    ".husky": true
+  },
+  "explorerExclude.backup": {}
 }
