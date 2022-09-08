@@ -1,7 +1,7 @@
 import { Container, Grid, Stack, Table, Text } from '@mantine/core';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useActionData, useLoaderData } from '@remix-run/react';
 import { withZod } from '@remix-validated-form/with-zod';
 import { MdAssignment, MdAttachMoney } from 'react-icons/md';
 import { ValidatedForm, validationError } from 'remix-validated-form';
@@ -13,6 +13,7 @@ import type { FixedCost } from '~/models/fixedCost.server';
 import { createFixedCost, getFixedCosts } from '~/models/fixedCost.server';
 import { fixedCostCreateSchema } from '~/schemas/fixedCost';
 import moneyFormatter from '~/utils/moneyFormatter';
+import { unexpectedError } from '~/utils/responses.server';
 
 const { Col } = Grid;
 
@@ -26,6 +27,7 @@ type ActionData = {
     costName?: string;
     montlyCost?: string;
   };
+  unexpectedError?: string;
   createdFixedCost?: FixedCost;
 };
 
@@ -37,16 +39,23 @@ export const loader = async () =>
   });
 
 export const action: ActionFunction = async ({ request }) => {
-  const { data, error } = await validator.validate(await request.formData());
-  if (error) return validationError(error);
+  try {
+    const { data, error } = await validator.validate(await request.formData());
+    if (error) return validationError(error);
 
-  const createdFixedCost = await createFixedCost(data);
-
-  return json<ActionData>({ createdFixedCost });
+    const createdFixedCost = await createFixedCost(data);
+    return json<ActionData>({ createdFixedCost });
+  } catch (error) {
+    return unexpectedError(error);
+  }
 };
 
 export default function FixedCosts() {
   const { fixedCosts } = useLoaderData<LoaderData>();
+  const actionData = useActionData<ActionData>();
+  const unexpectedError = actionData?.unexpectedError;
+
+  const total = fixedCosts.reduce((acc, { montlyCost }) => acc + Number(montlyCost), 0);
 
   return (
     <Container>
@@ -62,11 +71,13 @@ export default function FixedCosts() {
               />
               <NumberInput
                 name={montlyCostKey}
+                precision={2}
                 label="Costo mensual"
                 placeholder="Costo mensual"
                 icon={<MdAttachMoney />}
               />
               <SubmitButton type="submit">Agregar</SubmitButton>
+              <Text color="red">{unexpectedError}</Text>
             </Stack>
           </ValidatedForm>
         </Col>
@@ -84,11 +95,17 @@ export default function FixedCosts() {
                 return (
                   <tr key={id}>
                     <td>{costName}</td>
-                    <td>{moneyFormatter.format(montlyCost)}</td>
+                    <td>{moneyFormatter.format(Number(montlyCost))}</td>
                   </tr>
                 );
               })}
             </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th>{moneyFormatter.format(total)}</th>
+              </tr>
+            </tfoot>
           </Table>
         </Col>
       </Grid>

@@ -13,7 +13,7 @@ datasource db {
 model FixedCost {
   id Int @id @default(autoincrement())
   costName String
-  montlyCost Int
+  montlyCost Decimal
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
