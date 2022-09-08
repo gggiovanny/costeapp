@@ -1,11 +1,17 @@
-import { Button, Container, Grid, Stack, Table, Text, TextInput } from '@mantine/core';
+import { Container, Grid, Stack, Table, Text } from '@mantine/core';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, useActionData, useLoaderData, useTransition } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
+import { withZod } from '@remix-validated-form/with-zod';
 import { MdAssignment, MdAttachMoney } from 'react-icons/md';
+import { ValidatedForm, validationError } from 'remix-validated-form';
 
+import NumberInput from '~/components/NumberInput';
+import SubmitButton from '~/components/SubmitButton';
+import TextInput from '~/components/TextInput';
 import type { FixedCost } from '~/models/fixedCost.server';
 import { createFixedCost, getFixedCosts } from '~/models/fixedCost.server';
+import { fixedCostCreateSchema } from '~/schemas/fixedCost';
 import moneyFormatter from '~/utils/moneyFormatter';
 
 const { Col } = Grid;
@@ -16,86 +22,53 @@ const montlyCostKey = 'montlyCost';
 type LoaderData = { fixedCosts: FixedCost[] };
 
 type ActionData = {
-  formError?: string;
   fieldErrors?: {
-    costName: string | undefined;
-    montlyCost: string | undefined;
-  };
-  fields?: {
-    costName: string;
-    montlyCost: number;
+    costName?: string;
+    montlyCost?: string;
   };
   createdFixedCost?: FixedCost;
 };
+
+const validator = withZod(fixedCostCreateSchema);
 
 export const loader = async () =>
   json<LoaderData>({
     fixedCosts: await getFixedCosts(),
   });
 
-const badRequest = (data: ActionData) => json(data, { status: 400 });
-
 export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-  const costName = formData.get(costNameKey);
-  const montlyCost = Number(formData.get(montlyCostKey));
+  const { data, error } = await validator.validate(await request.formData());
+  if (error) return validationError(error);
 
-  if (typeof costName !== 'string' || typeof montlyCost !== 'number') {
-    return badRequest({
-      formError: 'Hay errores en el formulario',
-    });
-  }
-
-  const fieldErrors = {
-    costName: costName.length >= 3 ? undefined : 'El concepto es demasiado corto',
-    montlyCost: montlyCost > 0 ? undefined : 'El costo mensual debe ser mayor a 0',
-  };
-
-  const fields = { costName, montlyCost };
-  if (Object.values(fieldErrors).some(errorMessage => errorMessage)) {
-    return badRequest({ fieldErrors, fields });
-  }
-
-  const createdFixedCost = await createFixedCost(fields);
+  const createdFixedCost = await createFixedCost(data);
 
   return json<ActionData>({ createdFixedCost });
 };
 
 export default function FixedCosts() {
   const { fixedCosts } = useLoaderData<LoaderData>();
-  const actionData = useActionData<ActionData>();
-  const transition = useTransition();
-
-  const isCreating = !!transition.submission;
-
-  const { costName: costNameError, montlyCost: montlyCostError } = actionData?.fieldErrors || {};
-  const formError = actionData?.formError;
 
   return (
     <Container>
       <Grid>
         <Col md={6}>
-          <Form method="post">
+          <ValidatedForm validator={validator} method="post">
             <Stack>
               <TextInput
                 name={costNameKey}
                 label="Concepto"
                 placeholder="Concepto"
                 icon={<MdAssignment />}
-                error={costNameError}
               />
-              <TextInput
+              <NumberInput
                 name={montlyCostKey}
-                type="number"
                 label="Costo mensual"
                 placeholder="Costo mensual"
                 icon={<MdAttachMoney />}
-                error={montlyCostError}
               />
-              <Button type="submit">{isCreating ? 'Agregando...' : 'Agregar'}</Button>
-              <Text color="red">{formError}</Text>
+              <SubmitButton type="submit">Agregar</SubmitButton>
             </Stack>
-          </Form>
+          </ValidatedForm>
         </Col>
         <Col md={6}>
           <Text size="xl">Costos Fijos</Text>
@@ -107,9 +80,9 @@ export default function FixedCosts() {
               </tr>
             </thead>
             <tbody>
-              {fixedCosts.map(({ costName, montlyCost }, index) => {
+              {fixedCosts.map(({ costName, montlyCost, id }) => {
                 return (
-                  <tr key={index}>
+                  <tr key={id}>
                     <td>{costName}</td>
                     <td>{moneyFormatter.format(montlyCost)}</td>
                   </tr>

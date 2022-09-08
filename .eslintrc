@@ -11,8 +11,8 @@
     "quotes": ["warn", "single"],
     "jsx-quotes": ["warn", "prefer-double"],
     "react/self-closing-comp": "warn",
-    "semi": "off",
-    "@typescript-eslint/semi": ["warn", "always"],
+    "@typescript-eslint/member-delimiter-style": "warn",
+    "@typescript-eslint/no-explicit-any": ["warn"],
     "object-curly-spacing": ["warn", "always"]
   }
 }
