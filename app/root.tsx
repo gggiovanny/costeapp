@@ -2,11 +2,13 @@ import { AppShell, MantineProvider } from '@mantine/core';
 import { StylesPlaceholder } from '@mantine/remix';
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import React from 'react';
 
 import faviconUrl from './assets/favicon.ico';
+import ErrorPage from './components/ErrorPage';
 import Sidebar from './components/Sidebar';
 import globalStylesUrl from './styles/global.css';
-import { theme } from './theme';
+import { theme } from './styles/theme';
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
@@ -25,9 +27,9 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export default function App() {
+function Document({ children }: { children: React.ReactNode }) {
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       <html lang="en">
         <head>
           <Meta />
@@ -35,14 +37,30 @@ export default function App() {
           <StylesPlaceholder />
         </head>
         <body>
-          <AppShell navbar={<Sidebar />}>
-            <Outlet />
-          </AppShell>
+          {children}
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
         </body>
       </html>
     </MantineProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <Document>
+      <AppShell navbar={<Sidebar />}>
+        <Outlet />
+      </AppShell>
+    </Document>
+  );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  return (
+    <Document>
+      <ErrorPage error={error} />
+    </Document>
   );
 }

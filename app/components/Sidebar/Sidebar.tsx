@@ -3,13 +3,13 @@ import { Link, useMatches } from '@remix-run/react';
 import { MdAttachMoney } from 'react-icons/md';
 
 import Logo from '~/components/Logo';
-import { ROUTE_NAME } from '~/routes/fixed-costs';
+import { FIXED_COSTS_ROUTE } from '~/routes/fixed-costs/constants';
 
 import useStyles from './useStyles';
 
 const { Section } = Navbar;
 
-const links = [{ route: `/${ROUTE_NAME}`, label: 'Costos fijos', Icon: MdAttachMoney }];
+const links = [{ route: FIXED_COSTS_ROUTE, label: 'Costos fijos', Icon: MdAttachMoney }];
 
 export default function Sidebar() {
   const { classes, cx } = useStyles();
