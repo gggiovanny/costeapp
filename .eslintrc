@@ -13,6 +13,7 @@
     "react/self-closing-comp": "warn",
     "@typescript-eslint/member-delimiter-style": "warn",
     "@typescript-eslint/no-explicit-any": ["warn"],
-    "object-curly-spacing": ["warn", "always"]
+    "object-curly-spacing": ["warn", "always"],
+    "no-console": "warn"
   }
 }

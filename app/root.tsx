@@ -9,6 +9,9 @@ import ErrorPage from './components/ErrorPage';
 import Sidebar from './components/Sidebar';
 import globalStylesUrl from './styles/global.css';
 import { theme } from './styles/theme';
+import configureDayJS from './utils/configureDayJS';
+
+configureDayJS();
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',

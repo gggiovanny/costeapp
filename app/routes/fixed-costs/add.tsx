@@ -15,7 +15,7 @@ import { fixedCostCreateSchema } from '~/schemas/fixedCost';
 
 import { COST_NAME_KEY, FIXED_COSTS_ROUTE, MONTLY_COST_KEY } from './constants';
 
-export const validator = withZod(fixedCostCreateSchema);
+const validator = withZod(fixedCostCreateSchema);
 
 export const action: ActionFunction = async ({ request }) => {
   const { data, error } = await validator.validate(await request.formData());
