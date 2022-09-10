@@ -4,21 +4,23 @@ import { Link, useLoaderData } from '@remix-run/react';
 import { MdAdd } from 'react-icons/md';
 
 import ErrorPage from '~/components/ErrorPage';
-import type { FixedCost } from '~/models/fixedCost.server';
-import { getFixedCosts } from '~/models/fixedCost.server';
+import { getFixedCosts, totalMonthlyFixedCosts } from '~/models/fixedCost.server';
+import type { AsyncReturnType } from '~/types/models';
 import moneyFormatter from '~/utils/moneyFormatter';
 
-type LoaderData = { fixedCosts: FixedCost[] };
+type LoaderData = {
+  fixedCosts: AsyncReturnType<typeof getFixedCosts>;
+  total: AsyncReturnType<typeof totalMonthlyFixedCosts>;
+};
 
 export const loader = async () =>
   json<LoaderData>({
     fixedCosts: await getFixedCosts(),
+    total: await totalMonthlyFixedCosts(),
   });
 
 export default function FixedCostsTable() {
-  const { fixedCosts } = useLoaderData<LoaderData>();
-
-  const total = fixedCosts.reduce((acc, { montlyCost }) => acc + Number(montlyCost), 0);
+  const { fixedCosts, total } = useLoaderData<LoaderData>();
 
   return (
     <>
@@ -48,7 +50,7 @@ export default function FixedCostsTable() {
         <tfoot>
           <tr>
             <th>Total</th>
-            <th>{moneyFormatter.format(total)}</th>
+            <th>{moneyFormatter.format(Number(total))}</th>
           </tr>
         </tfoot>
       </Table>
