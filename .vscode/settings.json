@@ -48,5 +48,7 @@
     "**/Thumbs.db": true,
     ".husky": true
   },
-  "explorerExclude.backup": {}
+  "explorerExclude.backup": {},
+  "rewrap.autoWrap.enabled": true,
+  "rewrap.wrappingColumn": 100
 }

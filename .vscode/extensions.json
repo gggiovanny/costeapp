@@ -3,6 +3,7 @@
     "Prisma.prisma",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "seunlanlege.action-buttons"
+    "seunlanlege.action-buttons",
+    "stkb.rewrap"
   ]
 }

@@ -1,7 +1,7 @@
 import type { FixedCost } from '@prisma/client';
 
 import { db } from '~/db.server';
-import type { OmitMetadata } from '~/types/modelTypes';
+import type { PartialWithRequiredId } from '~/types/modelTypes';
 
 export type { FixedCost };
 
@@ -26,7 +26,7 @@ export async function createFixedCost(fixedCost: Pick<FixedCost, 'costName' | 'm
   return db.fixedCost.create({ data: fixedCost });
 }
 
-export async function bulkUpdateFixedCosts(changedFixedCosts: OmitMetadata<FixedCost>[]) {
+export async function bulkUpdateFixedCosts(changedFixedCosts: PartialWithRequiredId<FixedCost>[]) {
   const fixedCostUpdates = changedFixedCosts.map(({ id, ...rest }) =>
     db.fixedCost.update({
       data: rest,

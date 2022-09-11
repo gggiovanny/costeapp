@@ -5,13 +5,19 @@ import { DECIMAL_NUMBER_REGEX } from '~/constants/regex';
 
 export const fixedCostCreateSchema = z.object({
   costName: z
-    .string()
+    .string({
+      required_error: 'El concepto es requerido',
+      invalid_type_error: 'El concepto debe ser enviado como texto',
+    })
     .trim()
     .min(1, 'El concepto es requerido')
     .min(3, 'El concepto es demasiado corto')
     .trim(),
   montlyCost: z
-    .string()
+    .string({
+      required_error: 'El costo mensual es requerido',
+      invalid_type_error: 'El costo mensual debe ser enviado como texto',
+    })
     .trim()
     .min(1, 'El costo mensual es requerido')
     .regex(DECIMAL_NUMBER_REGEX, 'El costo mensual debe ser un número')
@@ -23,8 +29,11 @@ export const CHANGED_FIXED_COSTS_KEY = 'changedFixedCosts';
 
 export const fixedCostsBulkUpdateSchema = z.object({
   [CHANGED_FIXED_COSTS_KEY]: fixedCostCreateSchema
+    .partial()
     .extend({
       id: z.string().transform(Number),
     })
     .array(),
 });
+
+export type fixedCostsBulkUpdateType = z.infer<typeof fixedCostsBulkUpdateSchema>;
