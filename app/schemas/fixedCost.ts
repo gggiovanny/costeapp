@@ -25,15 +25,21 @@ export const fixedCostCreateSchema = z.object({
     .transform(n => new Prisma.Decimal(n)),
 });
 
+const fixedCostIdSchema = z.string().transform(Number);
+
 export const CHANGED_FIXED_COSTS_KEY = 'changedFixedCosts';
 
 export const fixedCostsBulkUpdateSchema = z.object({
   [CHANGED_FIXED_COSTS_KEY]: fixedCostCreateSchema
     .partial()
     .extend({
-      id: z.string().transform(Number),
+      id: fixedCostIdSchema,
     })
     .array(),
 });
 
 export type fixedCostsBulkUpdateType = z.infer<typeof fixedCostsBulkUpdateSchema>;
+
+export const fixedCostDeleteSchema = z.object({
+  id: fixedCostIdSchema,
+});

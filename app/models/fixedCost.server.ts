@@ -36,3 +36,7 @@ export async function bulkUpdateFixedCosts(changedFixedCosts: PartialWithRequire
 
   return db.$transaction(fixedCostUpdates);
 }
+
+export async function deleteFixedCost(id: FixedCost['id']) {
+  return db.fixedCost.delete({ where: { id } });
+}

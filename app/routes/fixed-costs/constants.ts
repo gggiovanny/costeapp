@@ -1,4 +1,5 @@
 export const FIXED_COSTS_ROUTE = '/fixed-costs';
+export const FIXED_COSTS_DELETE_ROUTE = '/fixed-costs/delete';
 
 export const COST_ID_KEY = 'id';
 export const COST_NAME_KEY = 'costName';

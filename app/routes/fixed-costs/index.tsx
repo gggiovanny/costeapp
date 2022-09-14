@@ -1,11 +1,12 @@
-import { Badge, Button, Group, Table, Title } from '@mantine/core';
+import { ActionIcon, Badge, Button, Group, Table, Text, Title } from '@mantine/core';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { Link, useFetcher, useLoaderData } from '@remix-run/react';
 import { withZod } from '@remix-validated-form/with-zod';
-import { MdAdd, MdSave } from 'react-icons/md';
+import { MdAdd, MdDelete, MdSave } from 'react-icons/md';
 import { ValidatedForm, validationError } from 'remix-validated-form';
 
+import ConfirmationButton from '~/components/ConfirmationButton';
 import ErrorPage from '~/components/ErrorPage';
 import NumberInput from '~/components/NumberInput';
 import SubmitButton from '~/components/SubmitButton';
@@ -21,7 +22,7 @@ import { CHANGED_FIXED_COSTS_KEY, fixedCostsBulkUpdateSchema } from '~/schemas/f
 import type { AsyncReturnType } from '~/types/modelTypes';
 import moneyFormatter from '~/utils/moneyFormatter';
 
-import { COST_ID_KEY, COST_NAME_KEY, MONTLY_COST_KEY } from './constants';
+import { COST_ID_KEY, COST_NAME_KEY, FIXED_COSTS_DELETE_ROUTE, MONTLY_COST_KEY } from './constants';
 
 type LoaderData = {
   fixedCosts: AsyncReturnType<typeof getFixedCosts>;
@@ -57,6 +58,17 @@ export default function FixedCostsTable() {
   const { savedStatusMessage, validatedFormProps, saveButtonProps } =
     useFormAutosave<fixedCostsBulkUpdateType>(formId);
 
+  const deleteFetcher = useFetcher();
+
+  const createDeleteFixedCostHandler = (id: number) => () => {
+    deleteFetcher.submit(
+      { id: id.toString() },
+      { method: 'delete', action: FIXED_COSTS_DELETE_ROUTE }
+    );
+  };
+
+  const isDeleting = deleteFetcher.state === 'submitting';
+
   return (
     <ValidatedForm validator={validator} {...validatedFormProps}>
       <Group position="apart">
@@ -65,7 +77,7 @@ export default function FixedCostsTable() {
           <Button component={Link} to="add" leftIcon={<MdAdd />}>
             Agregar
           </Button>
-          <SubmitButton leftIcon={<MdSave />} {...saveButtonProps}>
+          <SubmitButton leftIcon={<MdSave />} loading={saveButtonProps.loading || isDeleting}>
             Guardar cambios
           </SubmitButton>
           {savedStatusMessage && <Badge>{savedStatusMessage}</Badge>}
@@ -76,6 +88,7 @@ export default function FixedCostsTable() {
           <tr>
             <th>Concepto</th>
             <th>Costo mensual</th>
+            <th />
           </tr>
         </thead>
         <tbody>
@@ -83,7 +96,9 @@ export default function FixedCostsTable() {
             const getInputName = createGetInputName(index);
             return (
               <tr key={id}>
-                <input type="hidden" name={getInputName(COST_ID_KEY)} value={id} />
+                <td style={{ display: 'none' }}>
+                  <input type="hidden" name={getInputName(COST_ID_KEY)} value={id} />
+                </td>
                 <td>
                   <TextInput name={getInputName(COST_NAME_KEY)} defaultValue={costName} />
                 </td>
@@ -93,6 +108,20 @@ export default function FixedCostsTable() {
                     precision={2}
                     defaultValue={Number(montlyCost)}
                   />
+                </td>
+                <td>
+                  <ConfirmationButton
+                    message={
+                      <span>
+                        ¿Estás seguro de que quieres borrar <Text italic>{costName}</Text>
+                      </span>
+                    }
+                    onClick={createDeleteFixedCostHandler(id)}
+                  >
+                    <ActionIcon>
+                      <MdDelete />
+                    </ActionIcon>
+                  </ConfirmationButton>
                 </td>
               </tr>
             );
