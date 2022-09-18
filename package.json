@@ -33,6 +33,7 @@
     "@types/lodash": "^4.14.184",
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.5",
+    "framer-motion": "^7.3.5",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

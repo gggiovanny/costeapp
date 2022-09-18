@@ -1,10 +1,11 @@
-import { Container } from '@mantine/core';
 import { Outlet } from '@remix-run/react';
+
+import RouteContainer from '~/components/RouteContainer';
 
 export default function FixedCosts() {
   return (
-    <Container>
+    <RouteContainer>
       <Outlet />
-    </Container>
+    </RouteContainer>
   );
 }

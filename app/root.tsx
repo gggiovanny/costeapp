@@ -1,10 +1,11 @@
 import { AppShell, MantineProvider } from '@mantine/core';
 import { StylesPlaceholder } from '@mantine/remix';
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from '@remix-run/react';
 import React from 'react';
 
 import faviconUrl from './assets/favicon.ico';
+import AnimatedOutlet from './components/AnimatedOutlet';
 import ErrorPage from './components/ErrorPage';
 import Sidebar from './components/Sidebar';
 import globalStylesUrl from './styles/global.css';
@@ -54,7 +55,7 @@ export default function App() {
   return (
     <Document>
       <AppShell navbar={<Sidebar />}>
-        <Outlet />
+        <AnimatedOutlet />
       </AppShell>
     </Document>
   );
