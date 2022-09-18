@@ -3,15 +3,11 @@ import type { MantineThemeOverride } from '@mantine/core';
 import { BREAKPOINT } from './constants/breakpoints';
 
 export const theme: MantineThemeOverride = {
+  primaryColor: 'pink',
   components: {
-    Center: {
-      defaultProps: {
-        style: { height: '100%' },
-      },
-    },
     Container: {
       defaultProps: {
-        style: { height: '100%' },
+        sx: { height: '100%' },
       },
     },
   },

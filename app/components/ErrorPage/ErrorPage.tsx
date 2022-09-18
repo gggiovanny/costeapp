@@ -11,7 +11,7 @@ export default function ErrorPage({ title = 'Chale, ha ocurrido un error', error
   const goBack = useGoBack();
 
   return (
-    <Center>
+    <Center sx={{ height: '100%' }}>
       <Stack align={'center'}>
         <Title order={1}>{title}</Title>
         {error && <Code block>{error.message}</Code>}

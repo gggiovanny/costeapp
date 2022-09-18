@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Button, Group, Table, Text, Title } from '@mantine/core';
+import { ActionIcon, Badge, Box, Button, Group, Table, Text, Title } from '@mantine/core';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, useFetcher, useLoaderData } from '@remix-run/react';
@@ -96,9 +96,9 @@ export default function FixedCostsTable() {
             const getInputName = createGetInputName(index);
             return (
               <tr key={id}>
-                <td style={{ display: 'none' }}>
+                <Box component="td" sx={{ display: 'none' }}>
                   <input type="hidden" name={getInputName(COST_ID_KEY)} value={id} />
-                </td>
+                </Box>
                 <td>
                   <TextInput name={getInputName(COST_NAME_KEY)} defaultValue={costName} />
                 </td>

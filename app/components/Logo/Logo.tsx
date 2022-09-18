@@ -1,9 +1,12 @@
+import { useMantineTheme } from '@mantine/core';
+
 type Props = {
   size?: number;
-  fillColor?: string;
 };
 
-export default function Logo({ size = 24, fillColor = 'white' }: Props) {
+export default function Logo({ size = 24 }: Props) {
+  const { primaryColor } = useMantineTheme();
+
   return (
     <div>
       <svg
@@ -17,7 +20,7 @@ export default function Logo({ size = 24, fillColor = 'white' }: Props) {
         <metadata>Created by potrace 1.11, written by Peter Selinger 2001-2013</metadata>
         <g
           transform={'translate(0.000000,500.000000) scale(0.100000,-0.100000)'}
-          fill={fillColor}
+          fill={primaryColor}
           stroke="none"
         >
           <path
