@@ -24,6 +24,7 @@
     "@emotion/styled": "^11.10.4",
     "@mantine/core": "^5.2.5",
     "@mantine/hooks": "^5.2.5",
+    "@mantine/modals": "^5.3.3",
     "@mantine/notifications": "^5.2.5",
     "@mantine/remix": "^5.2.5",
     "@remix-run/architect": "^1.6.8",

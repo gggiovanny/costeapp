@@ -94,6 +94,7 @@ export default function <T>(formId: string) {
     },
     saveButtonProps: {
       loading: fetcher.state === 'submitting',
+      onClick: submit,
     },
   };
 }

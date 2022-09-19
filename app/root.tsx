@@ -1,4 +1,5 @@
 import { AppShell, MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { StylesPlaceholder } from '@mantine/remix';
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import { Links, LiveReload, Meta, Scripts, ScrollRestoration } from '@remix-run/react';
@@ -41,19 +42,21 @@ function Document({ children }: { children: React.ReactNode }) {
       withGlobalStyles
       withNormalizeCSS
     >
-      <html lang="en">
-        <head>
-          <Meta />
-          <Links />
-          <StylesPlaceholder />
-        </head>
-        <body>
-          {children}
-          <ScrollRestoration />
-          <Scripts />
-          <LiveReload />
-        </body>
-      </html>
+      <ModalsProvider>
+        <html lang="en">
+          <head>
+            <Meta />
+            <Links />
+            <StylesPlaceholder />
+          </head>
+          <body>
+            {children}
+            <ScrollRestoration />
+            <Scripts />
+            <LiveReload />
+          </body>
+        </html>
+      </ModalsProvider>
     </MantineProvider>
   );
 }

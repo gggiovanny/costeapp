@@ -10,6 +10,13 @@ export const theme: MantineThemeOverride = {
         sx: { height: '100%' },
       },
     },
+    Modal: {
+      styles: {
+        title: {
+          fontWeight: 500,
+        },
+      },
+    },
   },
   breakpoints: {
     xs: BREAKPOINT.xs,
