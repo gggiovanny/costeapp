@@ -8,6 +8,7 @@ import faviconUrl from './assets/favicon.ico';
 import AnimatedOutlet from './components/AnimatedOutlet';
 import ErrorPage from './components/ErrorPage';
 import Sidebar from './components/Sidebar';
+import useDarkMode from './hooks/useDarkMode';
 import globalStylesUrl from './styles/global.css';
 import { theme } from './styles/theme';
 import configureDayJS from './utils/configureDayJS';
@@ -32,8 +33,14 @@ export const links: LinksFunction = () => [
 ];
 
 function Document({ children }: { children: React.ReactNode }) {
+  const { isDarkModeOn } = useDarkMode();
+
   return (
-    <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+    <MantineProvider
+      theme={{ ...theme, colorScheme: isDarkModeOn ? 'dark' : 'light' }}
+      withGlobalStyles
+      withNormalizeCSS
+    >
       <html lang="en">
         <head>
           <Meta />
