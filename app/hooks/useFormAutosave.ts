@@ -1,9 +1,9 @@
 import { useIdle } from '@mantine/hooks';
 import type { FormMethod } from '@remix-run/react';
 import { useFetcher } from '@remix-run/react';
-import dayjs from 'dayjs';
 import { get, isEmpty } from 'lodash';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { MdCheck, MdSave } from 'react-icons/md';
 import type { TouchedFields } from 'remix-validated-form';
 import { useFormContext } from 'remix-validated-form';
 
@@ -14,8 +14,6 @@ import { useFormContext } from 'remix-validated-form';
 const idleTimeoutInMs = 1000 * 5; // 5 seconds
 const identifierKey = 'id';
 const submitMethod: FormMethod = 'post';
-
-export const LAST_SAVED_DATE_KEY = 'lastSaveDate';
 
 const getIdPath = (fieldNamePath: string) => fieldNamePath.replace(/(\.\w+)$/, `.${identifierKey}`);
 const indexRegex = /\[(\d+)\]/;
@@ -62,9 +60,7 @@ export default function <T>(formId: string) {
   const { submit, touchedFields } = useFormContext(formId);
   const fetcher = useFetcher();
   const isIdle = useIdle(idleTimeoutInMs, { initialState: false, events: ['keypress', 'click'] });
-
-  const lastSaveDate = fetcher.data?.[LAST_SAVED_DATE_KEY];
-  const savedStatusMessage = lastSaveDate ? `Guardado ${dayjs(lastSaveDate).fromNow()}` : undefined;
+  const isTouched = !isEmpty(touchedFields);
 
   useEffect(() => {
     if (isIdle) {
@@ -77,13 +73,12 @@ export default function <T>(formId: string) {
     event.preventDefault();
 
     // prevents a request when there isn't touched fields
-    if (isEmpty(touchedFields)) return;
+    if (!isTouched) return;
 
     fetcher.submit(createFormDataFromTouched(touchedFields, data), { method: submitMethod });
   }
 
   return {
-    savedStatusMessage,
     validatedFormProps: {
       id: formId,
       method: submitMethod,
@@ -93,6 +88,8 @@ export default function <T>(formId: string) {
       fetcher,
     },
     saveButtonProps: {
+      children: isTouched ? 'Guardar' : 'Guardado',
+      leftIcon: isTouched ? React.createElement(MdSave) : React.createElement(MdCheck),
       loading: fetcher.state === 'submitting',
       onClick: submit,
     },

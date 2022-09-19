@@ -17,6 +17,19 @@ async function seed() {
       create: fixedCost,
     });
   }
+  for (let id = 5; id < 40; id++) {
+    const fakeFixedCost = {
+      id,
+      costName: `test ${id}`,
+      montlyCost: id * 1000,
+    };
+
+    await db.fixedCost.upsert({
+      where: { id: fakeFixedCost.id },
+      update: fakeFixedCost,
+      create: fakeFixedCost,
+    });
+  }
 }
 
 seed();

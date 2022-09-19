@@ -3,7 +3,7 @@ import { Link, useLocation } from '@remix-run/react';
 import { MdDarkMode, MdLightMode } from 'react-icons/md';
 
 import Logo from '~/components/Logo';
-import useDarkMode from '~/hooks/useDarkMode';
+import useDarkMode from '~/styles/hooks/useDarkMode';
 
 import { LINKS } from './constants';
 import SidebarButton from './SidebarButton';

@@ -1,26 +1,16 @@
-import {
-  ActionIcon,
-  Badge,
-  Box,
-  Button,
-  Group,
-  LoadingOverlay,
-  Table,
-  Text,
-  Title,
-} from '@mantine/core';
+import { ActionIcon, Box, Button, Group, LoadingOverlay, Table, Text, Title } from '@mantine/core';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useFetcher, useLoaderData, useTransition } from '@remix-run/react';
 import { withZod } from '@remix-validated-form/with-zod';
-import { MdAdd, MdDelete, MdSave } from 'react-icons/md';
+import { MdAdd, MdAttachMoney, MdDelete } from 'react-icons/md';
 import { ValidatedForm, validationError } from 'remix-validated-form';
 
 import ConfirmationButton from '~/components/ConfirmationButton';
 import ErrorPage from '~/components/ErrorPage';
 import NumberInput from '~/components/NumberInput';
 import TextInput from '~/components/TextInput';
-import useFormAutosave, { LAST_SAVED_DATE_KEY } from '~/hooks/useFormAutosave';
+import useFormAutosave from '~/hooks/useFormAutosave';
 import {
   bulkUpdateFixedCosts,
   getFixedCosts,
@@ -29,6 +19,7 @@ import {
 import type { fixedCostsBulkUpdateType } from '~/schemas/fixedCost';
 import { CHANGED_FIXED_COSTS_KEY, fixedCostsBulkUpdateSchema } from '~/schemas/fixedCost';
 import useIsMobile from '~/styles/hooks/useIsMobile';
+import useStickyStyles from '~/styles/hooks/useStickyStyles';
 import type { AsyncReturnType } from '~/types/modelTypes';
 import moneyFormatter from '~/utils/moneyFormatter';
 
@@ -55,11 +46,9 @@ export const action: ActionFunction = async ({ request }) => {
   const { data, error } = await updateValidator.validate(await request.formData());
   if (error) return validationError(error);
 
-  const updatedFixedCosts = await bulkUpdateFixedCosts(data[CHANGED_FIXED_COSTS_KEY]);
+  await bulkUpdateFixedCosts(data[CHANGED_FIXED_COSTS_KEY]);
 
-  return json({
-    [LAST_SAVED_DATE_KEY]: updatedFixedCosts.at(-1)?.updatedAt,
-  });
+  return 1;
 };
 
 const formId = 'fixedCostsForm';
@@ -67,10 +56,10 @@ const formId = 'fixedCostsForm';
 export default function FixedCostsTable() {
   const { fixedCosts, total } = useLoaderData<LoaderData>();
   const { state } = useTransition();
-  const { savedStatusMessage, validatedFormProps, saveButtonProps } =
-    useFormAutosave<fixedCostsBulkUpdateType>(formId);
+  const { validatedFormProps, saveButtonProps } = useFormAutosave<fixedCostsBulkUpdateType>(formId);
   const deleteFetcher = useFetcher();
   const isMobile = useIsMobile();
+  const { classes: stickyClasses, cx } = useStickyStyles();
 
   const isLoadingData = state !== 'idle';
   const isDeleting = deleteFetcher.state === 'submitting';
@@ -85,25 +74,20 @@ export default function FixedCostsTable() {
   return (
     <>
       <LoadingOverlay visible={isLoadingData || isDeleting} />
-      <Group position="apart">
+      <Group position="apart" className={stickyClasses.top}>
         <Title order={1}>Costos Fijos</Title>
-        <Group>
-          <Button leftIcon={<MdAdd />} onClick={openAddFixedCostModal(isMobile)}>
-            Agregar
-          </Button>
-          <Button {...saveButtonProps} leftIcon={<MdSave />}>
-            Guardar cambios
-          </Button>
-          {savedStatusMessage && <Badge>{savedStatusMessage}</Badge>}
-        </Group>
       </Group>
       <ValidatedForm validator={updateValidator} {...validatedFormProps}>
         <Table>
-          <thead>
+          <thead className={cx(stickyClasses.top, stickyClasses.topShadow)}>
             <tr>
               <th>Concepto</th>
               <th>Costo mensual</th>
-              <th />
+              <th>
+                <Button leftIcon={<MdAdd />} onClick={openAddFixedCostModal(isMobile)}>
+                  Agregar
+                </Button>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -122,6 +106,7 @@ export default function FixedCostsTable() {
                       name={getInputName(MONTLY_COST_KEY)}
                       precision={2}
                       defaultValue={Number(montlyCost)}
+                      icon={<MdAttachMoney size={16} />}
                     />
                   </td>
                   <td>
@@ -142,10 +127,17 @@ export default function FixedCostsTable() {
               );
             })}
           </tbody>
-          <tfoot>
+          <tfoot className={cx(stickyClasses.bottom, stickyClasses.bottomShadow)}>
             <tr>
               <th>Total</th>
               <th>{moneyFormatter.format(Number(total))}</th>
+              <th>
+                <Button
+                  size="xs"
+                  {...saveButtonProps}
+                  sx={{ maxWidth: '150px', fontSize: 'auto' }}
+                />
+              </th>
             </tr>
           </tfoot>
         </Table>

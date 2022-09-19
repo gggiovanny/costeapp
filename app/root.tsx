@@ -9,8 +9,8 @@ import faviconUrl from './assets/favicon.ico';
 import AnimatedOutlet from './components/AnimatedOutlet';
 import ErrorPage from './components/ErrorPage';
 import Sidebar from './components/Sidebar';
-import useDarkMode from './hooks/useDarkMode';
 import globalStylesUrl from './styles/global.css';
+import useDarkMode from './styles/hooks/useDarkMode';
 import { theme } from './styles/theme';
 import configureDayJS from './utils/configureDayJS';
 

@@ -6,9 +6,7 @@ export const theme: MantineThemeOverride = {
   primaryColor: 'pink',
   components: {
     Container: {
-      defaultProps: {
-        sx: { height: '100%' },
-      },
+      defaultProps: {},
     },
     Modal: {
       styles: {
