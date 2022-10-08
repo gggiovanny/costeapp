@@ -7,7 +7,6 @@
     "import/first": "warn",
     "import/newline-after-import": "warn",
     "import/no-duplicates": "warn",
-    "linebreak-style": ["warn", "unix"],
     "quotes": ["warn", "single"],
     "jsx-quotes": ["warn", "prefer-double"],
     "react/self-closing-comp": "warn",

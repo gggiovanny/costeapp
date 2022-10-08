@@ -13,17 +13,17 @@
         "command": "npm run db:prototype"
       },
       {
+        "name": "💼 migrate db",
+        "command": "npm run db:migrate"
+      },
+      {
         "name": "🌱 seed db",
         "command": "npm run seed"
       },
       {
         "name": "🔎 view db",
-        "command": "npm run viewdb"
+        "command": "npm run db:view"
       }
-      // {
-      //   "name": "💿  prisma update local",
-      //   "command": "npx prisma db push",
-      // },
     ]
   },
   "editor.codeActionsOnSave": {

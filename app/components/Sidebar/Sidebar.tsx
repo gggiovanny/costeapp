@@ -26,7 +26,7 @@ export default function Sidebar() {
       <Section grow mt={50}>
         <Stack justify="center" spacing={0}>
           {LINKS.map(link => (
-            <SidebarLink {...link} key={link.label} isActive={pathname?.includes(link.route)} />
+            <SidebarLink key={link.label} isActive={pathname?.includes(link.route)} {...link} />
           ))}
         </Stack>
       </Section>

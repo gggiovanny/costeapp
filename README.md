@@ -4,38 +4,50 @@
 
 ## Development
 
-The following command will run two processes during development when using Architect as your server.
-
-- Your Architect server sandbox
-- The Remix development server
+From your terminal:
 
 ```sh
-$ npm run dev
+npm run dev
 ```
 
-Your file changes are watched, and assets are rebuilt upon change.
+This starts your app in development mode, rebuilding assets on file changes.
 
-Open up [http://localhost:3333](http://localhost:3333) and you should be ready to go!
+## Deployment
 
-## Deploying
+First, build your app for production:
 
-Before you can deploy, you'll need to do some setup with AWS:
+```sh
+npm run build
+```
 
-- First [install the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-- Then [follow the Architect setup instructions](https://arc.codes/docs/en/guides/get-started/detailed-aws-setup).
+Then run the app in production mode:
 
-If you make it through all of that, you're ready to deploy!
+```sh
+npm start
+```
 
-1. build the app for production:
+Now you'll need to pick a host to deploy it to.
 
-   ```sh
-   npm run build
-   ```
+### DIY
 
-2. Deploy with `arc`
+If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
 
-   ```sh
-   arc deploy production
-   ```
+Make sure to deploy the output of `remix build`
 
-You're in business!
+- `build/`
+- `public/build/`
+
+### Using a Template
+
+When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
+
+```sh
+cd ..
+# create a new project, and pick a pre-configured host
+npx create-remix@latest
+cd my-new-remix-app
+# remove the new project's app (not the old one!)
+rm -rf app
+# copy your app over
+cp -R ../my-old-remix-app/app app
+```
