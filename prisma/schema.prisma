@@ -11,10 +11,38 @@ datasource db {
 }
 
 model FixedCost {
-  id Int @id @default(autoincrement())
-  costName String
+  id         Int     @id @default(autoincrement())
+  costName   String
   montlyCost Decimal
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Unit {
+  id               Int      @id @default(autoincrement())
+  unitName         String
+  abbreviation     String
+  suppliesIsInput  Supply[] @relation("InputUnit")
+  suppliesIsOutput Supply[] @relation("OutputUnit")
+}
+
+model Supply {
+  id                          Int       @id @default(autoincrement())
+  supplyName                  String
+  purchaseCost                Decimal
+  lossPercentage              Decimal
+  substitutes                 Supply[]  @relation("Substitutes")
+  substituteTo                Supply?   @relation("Substitutes", fields: [preferedSupplyId], references: [id])
+  preferedSupplyId            Int?
+  brand                       String
+  supplier                    String
+  inputUnit                   Unit      @relation("InputUnit", fields: [inputUnitId], references: [id])
+  inputUnitId                 Int
+  outputUnit                  Unit      @relation("OutputUnit", fields: [outputUnitId], references: [id])
+  outputUnitId                Int
+  inputToOutputUnitMultiplier Decimal   @default(1)
+  minStock                    Decimal
+  maxStock                    Decimal
+  expiration                  DateTime?
 }

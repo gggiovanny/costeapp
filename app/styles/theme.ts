@@ -1,9 +1,12 @@
 import type { MantineThemeOverride } from '@mantine/core';
 
+import { DAYJS_LOCALE } from '~/constants/locales';
+
 import { BREAKPOINT } from './constants/breakpoints';
 
 export const theme: MantineThemeOverride = {
   primaryColor: 'pink',
+  datesLocale: DAYJS_LOCALE,
   components: {
     Container: {
       defaultProps: {},

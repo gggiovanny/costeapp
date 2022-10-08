@@ -9,8 +9,8 @@
         "singleInstance": true
       },
       {
-        "name": "💼 migrate db",
-        "command": "npm run migrate"
+        "name": "🔧 prototype db",
+        "command": "npm run db:prototype"
       },
       {
         "name": "🌱 seed db",

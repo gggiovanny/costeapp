@@ -6,9 +6,7 @@ import { MdAssignment, MdAttachMoney } from 'react-icons/md';
 import { ValidatedForm, validationError } from 'remix-validated-form';
 
 import ErrorPage from '~/components/ErrorPage';
-import NumberInput from '~/components/NumberInput';
-import SubmitButton from '~/components/SubmitButton';
-import TextInput from '~/components/TextInput';
+import { NumberInput, SubmitButton, TextInput } from '~/components/ValidatedFields';
 import { createFixedCost } from '~/models/fixedCost.server';
 import { fixedCostCreateSchema } from '~/schemas/fixedCost';
 import useIsMobile from '~/styles/hooks/useIsMobile';

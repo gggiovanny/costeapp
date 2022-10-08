@@ -1,28 +1,10 @@
-import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { DECIMAL_NUMBER_REGEX } from '~/constants/regex';
+import { createDecimalType, createNameType } from './basicTypes';
 
 export const fixedCostCreateSchema = z.object({
-  costName: z
-    .string({
-      required_error: 'El concepto es requerido',
-      invalid_type_error: 'El concepto debe ser enviado como texto',
-    })
-    .trim()
-    .min(1, 'El concepto es requerido')
-    .min(3, 'El concepto es demasiado corto')
-    .trim(),
-  montlyCost: z
-    .string({
-      required_error: 'El costo mensual es requerido',
-      invalid_type_error: 'El costo mensual debe ser enviado como texto',
-    })
-    .trim()
-    .min(1, 'El costo mensual es requerido')
-    .regex(DECIMAL_NUMBER_REGEX, 'El costo mensual debe ser un número')
-    .refine(n => Number(n) > 0, 'El costo mensual debe ser un valor positivo')
-    .transform(n => new Prisma.Decimal(n)),
+  costName: createNameType('El concepto'),
+  montlyCost: createDecimalType('El costo mensual'),
 });
 
 const fixedCostIdSchema = z.string().transform(Number);

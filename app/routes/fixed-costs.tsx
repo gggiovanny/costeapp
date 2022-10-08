@@ -9,9 +9,8 @@ import { ValidatedForm, validationError } from 'remix-validated-form';
 
 import ConfirmationButton from '~/components/ConfirmationButton';
 import ErrorPage from '~/components/ErrorPage';
-import NumberInput from '~/components/NumberInput';
 import RouteContainer from '~/components/RouteContainer';
-import TextInput from '~/components/TextInput';
+import { NumberInput, TextInput } from '~/components/ValidatedFields';
 import useFormAutosave from '~/hooks/useFormAutosave';
 import {
   bulkUpdateFixedCosts,
