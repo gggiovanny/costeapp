@@ -1,80 +1,137 @@
-import { Stack } from '@mantine/core';
+import { Stack, Transition } from '@mantine/core';
 import { withZod } from '@remix-validated-form/with-zod';
-import { FaBoxOpen } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaBoxOpen, FaPercentage, FaRuler, FaTruckLoading } from 'react-icons/fa';
+import { HiMinus } from 'react-icons/hi';
+import { IoMdPricetag, IoMdTimer } from 'react-icons/io';
+import { MdAdd, MdAttachMoney } from 'react-icons/md';
+import { TbRuler2Off } from 'react-icons/tb';
 import { ValidatedForm } from 'remix-validated-form';
 
 import {
   DatePicker,
   NativeSelect,
   NumberInput,
-  Slider,
+  SliderInput,
+  SubmitButton,
   TextInput,
 } from '~/components/ValidatedFields';
 import { suppliesCreateSchema } from '~/schemas/supplies';
 
-import { FIELDS, SUPPLIES_ADD_ROUTE } from './constants';
+import { KEYS, SUPPLIES_ADD_ROUTE } from './constants';
 
 const frontValidator = withZod(suppliesCreateSchema);
 
+const formId = 'AddSupplyForm';
+
+const units = [
+  { value: '1', label: 'KG' },
+  { value: '2', label: 'AT' },
+  { value: '3', label: 'PAQ' },
+];
+
 export default function AddSupplyModal() {
+  const [inputUnitId, setInputUnitId] = useState('');
+  const [outputUnitId, setOutputUnitId] = useState('');
+
+  const inputUnit = units.find(({ value }) => value === inputUnitId)?.label ?? 'unidad de entrada';
+  const outputUnit = units.find(({ value }) => value === outputUnitId)?.label ?? 'unidad de salida';
+
+  function handleInputUnitChange(value: string) {
+    setInputUnitId(value);
+    setOutputUnitId(value);
+  }
+
   return (
-    <ValidatedForm validator={frontValidator} method="post" action={SUPPLIES_ADD_ROUTE}>
+    <ValidatedForm validator={frontValidator} method="post" action={SUPPLIES_ADD_ROUTE} id={formId}>
       <Stack>
         <TextInput
-          name={FIELDS.supplyName}
+          name={KEYS.supplyName}
           label="Nombre"
           placeholder="Nombre"
           icon={<FaBoxOpen />}
         />
         <NumberInput
-          name={FIELDS.purchaseCost}
+          name={KEYS.purchaseCost}
           label="Costo de compra"
           placeholder="Costo de compra"
           precision={2}
+          icon={<MdAttachMoney />}
         />
-        <Slider
-          name={FIELDS.lossPercentage}
-          label="Merma"
+        <SliderInput
+          name={KEYS.lossPercentage}
+          label="Merma %"
           defaultValue={0}
           min={0}
-          max={1}
-          step={0.1}
+          max={100}
+          step={1}
         />
         {/* TODO: Add substitute */}
-        <TextInput name={FIELDS.brand} label="Marca" placeholder="Marca" />
-        <TextInput name={FIELDS.supplier} label="Proveedor" placeholder="Proveedor" />
+        <TextInput name={KEYS.brand} label="Marca" placeholder="Marca" icon={<IoMdPricetag />} />
+        <TextInput
+          name={KEYS.supplier}
+          label="Proveedor"
+          placeholder="Proveedor"
+          icon={<FaTruckLoading />}
+        />
         <NativeSelect
-          name={FIELDS.inputUnitId}
+          name={KEYS.inputUnitId}
+          onChange={handleInputUnitChange}
+          value={inputUnitId}
           label="Unidad de entrada"
-          data={['KG', 'PAQ', 'AT']}
+          data={units}
+          icon={<FaRuler />}
         />
         <NativeSelect
-          name={FIELDS.outputUnitId}
+          name={KEYS.outputUnitId}
+          onChange={setOutputUnitId}
+          value={outputUnitId}
           label="Unidad de salida"
-          data={['KG', 'PAQ', 'AT']}
+          data={units}
+          icon={<TbRuler2Off />}
         />
+        <Transition
+          mounted={inputUnitId !== outputUnitId}
+          transition="fade"
+          duration={500}
+          timingFunction="ease"
+        >
+          {styles => (
+            <NumberInput
+              style={styles}
+              name={KEYS.inputToOutputUnitMultiplier}
+              label="Factor de conversión"
+              description={`1 ${inputUnit} equivale a cuantos ${outputUnit}`}
+              placeholder="Factor de conversión"
+              precision={2}
+              defaultValue={1}
+              icon={<FaPercentage />}
+            />
+          )}
+        </Transition>
         <NumberInput
-          name={FIELDS.inputToOutputUnitMultiplier}
-          label="Factor de conversión"
-          description="1 {unidad de entrada} equivale a cuantos {unidad de salida}"
-          placeholder="Costo de compra"
-          precision={4}
-        />
-        <NumberInput
-          name={FIELDS.minStock}
+          name={KEYS.minStock}
           label="Stock mínimo"
           description="La cantidad mínima deseada a tener en el inventario"
           placeholder="Stock mínimo"
           precision={2}
+          icon={<HiMinus />}
         />
         <NumberInput
-          name={FIELDS.maxStock}
+          name={KEYS.maxStock}
           label="Stock máximo"
           description="La máxima mínima deseada a tener en el inventario"
           placeholder="Stock máximo"
           precision={2}
+          icon={<MdAdd />}
         />
-        <DatePicker name={FIELDS.expiration} label="Expiración" placeholder="Expiración" />
+        <DatePicker
+          name={KEYS.expiration}
+          label="Expiración"
+          placeholder="Expiración"
+          icon={<IoMdTimer />}
+        />
+        <SubmitButton>Agregar</SubmitButton>
       </Stack>
     </ValidatedForm>
   );

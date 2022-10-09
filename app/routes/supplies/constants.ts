@@ -1,7 +1,7 @@
 export const SUPPLIES_ROUTE = '/supplies';
 export const SUPPLIES_ADD_ROUTE = '/supplies/add';
 
-export const FIELDS = {
+export const KEYS = {
   id: 'id',
   supplyName: 'supplyName',
   purchaseCost: 'purchaseCost',
