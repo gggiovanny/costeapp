@@ -7,7 +7,12 @@ import { HiMinus } from 'react-icons/hi';
 import { IoMdPricetag, IoMdTimer } from 'react-icons/io';
 import { MdAdd, MdAttachMoney } from 'react-icons/md';
 import { TbRuler2Off } from 'react-icons/tb';
-import { useControlField, ValidatedForm, validationError } from 'remix-validated-form';
+import {
+  useControlField,
+  useFormContext,
+  ValidatedForm,
+  validationError,
+} from 'remix-validated-form';
 
 import {
   DatePicker,
@@ -21,23 +26,27 @@ import useUnits from '~/hooks/data/useUnits';
 import { createSupply } from '~/models/supply.server';
 import { suppliesCreateSchema } from '~/schemas/supplies';
 
-import { KEYS, SUPPLIES_ADD_ROUTE, SUPPLIES_ROUTE } from '../../constants/constants';
+import { KEYS, SUPPLIES_ADD_ROUTE, SUPPLIES_ROUTE } from '../../constants/supplies';
 
 const creationValidator = withZod(suppliesCreateSchema);
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   console.log('file: add.tsx ~ line 28 ~ formData', Object.fromEntries(formData));
-  const { data, error } = await creationValidator.validate(formData);
-  if (error) return validationError(error);
+  // const { data, error } = await creationValidator.validate(formData);
+  // if (error) return validationError(error);
 
-  await createSupply(data);
-  return redirect(SUPPLIES_ROUTE);
+  // await createSupply(data);
+  // return redirect(SUPPLIES_ROUTE);
 };
 
 const formId = 'AddSupplyForm';
 
 export default function AddSupplyModal() {
+  const { fieldErrors, getValues } = useFormContext(formId);
+  console.log('file: add.tsx ~ line 47 ~ fieldErrors', fieldErrors);
+  // console.log('file: add.tsx ~ line 47 ~ getValues', Object.fromEntries(getValues()));
+
   const [units] = useUnits();
 
   const [inputUnitId, setInputUnitId] = useControlField<string>(KEYS.inputUnitId, formId);
@@ -48,6 +57,7 @@ export default function AddSupplyModal() {
     units.find(({ value }) => value === outputUnitId)?.label ?? 'unidades de salida';
 
   function handleInputUnitChange(value: string) {
+    console.log('file: add.tsx ~ line 60 ~ value', value);
     setInputUnitId(value);
     setOutputUnitId(value);
   }
