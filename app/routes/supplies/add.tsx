@@ -1,12 +1,13 @@
-import { Stack, Transition } from '@mantine/core';
+import { Collapse, Stack } from '@mantine/core';
+import type { ActionFunction } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { withZod } from '@remix-validated-form/with-zod';
-import { useState } from 'react';
 import { FaBoxOpen, FaPercentage, FaRuler, FaTruckLoading } from 'react-icons/fa';
 import { HiMinus } from 'react-icons/hi';
 import { IoMdPricetag, IoMdTimer } from 'react-icons/io';
 import { MdAdd, MdAttachMoney } from 'react-icons/md';
 import { TbRuler2Off } from 'react-icons/tb';
-import { ValidatedForm } from 'remix-validated-form';
+import { useControlField, ValidatedForm, validationError } from 'remix-validated-form';
 
 import {
   DatePicker,
@@ -16,26 +17,35 @@ import {
   SubmitButton,
   TextInput,
 } from '~/components/ValidatedFields';
+import useUnits from '~/hooks/data/useUnits';
+import { createSupply } from '~/models/supply.server';
 import { suppliesCreateSchema } from '~/schemas/supplies';
 
-import { KEYS, SUPPLIES_ADD_ROUTE } from './constants';
+import { KEYS, SUPPLIES_ADD_ROUTE, SUPPLIES_ROUTE } from '../../constants/constants';
 
-const frontValidator = withZod(suppliesCreateSchema);
+const creationValidator = withZod(suppliesCreateSchema);
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+  console.log('file: add.tsx ~ line 28 ~ formData', Object.fromEntries(formData));
+  const { data, error } = await creationValidator.validate(formData);
+  if (error) return validationError(error);
+
+  await createSupply(data);
+  return redirect(SUPPLIES_ROUTE);
+};
 
 const formId = 'AddSupplyForm';
 
-const units = [
-  { value: '1', label: 'KG' },
-  { value: '2', label: 'AT' },
-  { value: '3', label: 'PAQ' },
-];
-
 export default function AddSupplyModal() {
-  const [inputUnitId, setInputUnitId] = useState('');
-  const [outputUnitId, setOutputUnitId] = useState('');
+  const [units] = useUnits();
+
+  const [inputUnitId, setInputUnitId] = useControlField<string>(KEYS.inputUnitId, formId);
+  const [outputUnitId, setOutputUnitId] = useControlField<string>(KEYS.outputUnitId, formId);
 
   const inputUnit = units.find(({ value }) => value === inputUnitId)?.label ?? 'unidad de entrada';
-  const outputUnit = units.find(({ value }) => value === outputUnitId)?.label ?? 'unidad de salida';
+  const outputUnit =
+    units.find(({ value }) => value === outputUnitId)?.label ?? 'unidades de salida';
 
   function handleInputUnitChange(value: string) {
     setInputUnitId(value);
@@ -43,7 +53,12 @@ export default function AddSupplyModal() {
   }
 
   return (
-    <ValidatedForm validator={frontValidator} method="post" action={SUPPLIES_ADD_ROUTE} id={formId}>
+    <ValidatedForm
+      validator={creationValidator}
+      method="post"
+      action={SUPPLIES_ADD_ROUTE}
+      id={formId}
+    >
       <Stack>
         <TextInput
           name={KEYS.supplyName}
@@ -82,33 +97,28 @@ export default function AddSupplyModal() {
           data={units}
           icon={<FaRuler />}
         />
-        <NativeSelect
-          name={KEYS.outputUnitId}
-          onChange={setOutputUnitId}
-          value={outputUnitId}
-          label="Unidad de salida"
-          data={units}
-          icon={<TbRuler2Off />}
-        />
-        <Transition
-          mounted={inputUnitId !== outputUnitId}
-          transition="fade"
-          duration={500}
-          timingFunction="ease"
-        >
-          {styles => (
-            <NumberInput
-              style={styles}
-              name={KEYS.inputToOutputUnitMultiplier}
-              label="Factor de conversión"
-              description={`1 ${inputUnit} equivale a cuantos ${outputUnit}`}
-              placeholder="Factor de conversión"
-              precision={2}
-              defaultValue={1}
-              icon={<FaPercentage />}
-            />
-          )}
-        </Transition>
+        <Collapse in={!!inputUnitId}>
+          <NativeSelect
+            name={KEYS.outputUnitId}
+            onChange={setOutputUnitId}
+            value={outputUnitId}
+            label="Unidad de salida"
+            data={units}
+            icon={<TbRuler2Off />}
+          />
+        </Collapse>
+        <Collapse in={inputUnitId !== outputUnitId}>
+          <NumberInput
+            name={KEYS.inputToOutputUnitMultiplier}
+            label="Factor de conversión"
+            description={`1 ${inputUnit} equivale a cuant@s ${outputUnit}s`}
+            placeholder="Factor de conversión"
+            precision={2}
+            defaultValue={1}
+            icon={<FaPercentage />}
+          />
+        </Collapse>
+
         <NumberInput
           name={KEYS.minStock}
           label="Stock mínimo"

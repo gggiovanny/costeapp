@@ -23,13 +23,13 @@ import useStickyStyles from '~/styles/hooks/useStickyStyles';
 import type { AsyncReturnType } from '~/types/modelTypes';
 import moneyFormatter from '~/utils/moneyFormatter';
 
-import AddFixedCostModal from './fixed-costs/add';
 import {
   COST_ID_KEY,
   COST_NAME_KEY,
   FIXED_COSTS_DELETE_ROUTE,
   MONTLY_COST_KEY,
-} from './fixed-costs/constants';
+} from '../constants/fixedCosts';
+import AddFixedCostModal from './fixed-costs/add';
 
 type LoaderData = {
   fixedCosts: AsyncReturnType<typeof getFixedCosts>;

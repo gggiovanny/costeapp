@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { createDecimalType, createNameType } from './basicTypes';
+import { createDecimalType, createNameType, createNumberType } from './basicTypes';
 
 export const fixedCostCreateSchema = z.object({
   costName: createNameType('El concepto'),
   montlyCost: createDecimalType('El costo mensual'),
 });
 
-const fixedCostIdSchema = z.string().transform(Number);
+const fixedCostIdSchema = createNumberType('El ID');
 
 export const CHANGED_FIXED_COSTS_KEY = 'changedFixedCosts';
 

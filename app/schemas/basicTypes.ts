@@ -23,3 +23,13 @@ export const createDecimalType = (label: string) =>
     .min(1, `${label} es requerido`)
     .regex(POSITIVE_DECIMAL_NUMBER_REGEX, `${label} debe ser un número positivo`)
     .transform(n => new Prisma.Decimal(n));
+
+export const createNumberType = (label: string) =>
+  z
+    .string({
+      required_error: `${label} es requerido`,
+      invalid_type_error: `${label} debe ser enviado como texto`,
+    })
+    .trim()
+    .regex(POSITIVE_DECIMAL_NUMBER_REGEX, `${label} debe ser un número positivo`)
+    .transform(Number);

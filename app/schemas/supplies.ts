@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { POSITIVE_NUMBER_REGEX } from '~/constants/regex';
 
-import { createDecimalType, createNameType } from './basicTypes';
+import { createDecimalType, createNameType, createNumberType } from './basicTypes';
 
 export const suppliesCreateSchema = z.object({
   supplyName: createNameType('El nombre'),
@@ -19,8 +19,8 @@ export const suppliesCreateSchema = z.object({
     .transform(n => new Prisma.Decimal(n).div(100)),
   brand: createNameType('La marca'),
   supplier: createNameType('El proveedor'),
-  inputUnitId: z.string(), // TODO: check
-  outputUnitId: z.string(), // TODO: check
+  inputUnitId: createNumberType('La unidad de entrada'),
+  outputUnitId: createNumberType('La unidad de salida'),
   inputToOutputUnitMultiplier: createDecimalType('El factor de conversión'),
   minStock: createDecimalType('El stock mínimo'),
   maxStock: createDecimalType('El stock máximo'),

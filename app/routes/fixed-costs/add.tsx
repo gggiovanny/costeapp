@@ -16,7 +16,7 @@ import {
   FIXED_COSTS_ADD_ROUTE,
   FIXED_COSTS_ROUTE,
   MONTLY_COST_KEY,
-} from './constants';
+} from '../../constants/fixedCosts';
 
 const creationValidator = withZod(fixedCostCreateSchema);
 
