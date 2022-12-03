@@ -67,5 +67,8 @@
   },
   "prisma": {
     "seed": "node --require esbuild-register prisma/seed.ts"
+  },
+  "volta": {
+    "node": "18.12.1"
   }
 }
